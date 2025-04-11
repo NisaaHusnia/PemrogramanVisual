@@ -1,0 +1,4 @@
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0-windows\MyFirstApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0-windows\MyFirstApp.AssemblyInfoInputs.cache
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0-windows\MyFirstApp.AssemblyInfo.cs
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0-windows\MyFirstApp.csproj.CoreCompileInputs.cache
