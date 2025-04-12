@@ -1,7 +1,6 @@
 using System;
 using System.Windows.Forms;
 using ToDoListApp.Services;
-using ToDoListApp.Models;
 
 namespace ToDoListApp.Forms
 {

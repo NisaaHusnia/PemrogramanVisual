@@ -1,0 +1,15 @@
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net6.0-windows\MyFirstApp.exe
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net6.0-windows\MyFirstApp.deps.json
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net6.0-windows\MyFirstApp.runtimeconfig.json
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net6.0-windows\MyFirstApp.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net6.0-windows\MyFirstApp.pdb
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.AssemblyInfoInputs.cache
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.AssemblyInfo.cs
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.csproj.CoreCompileInputs.cache
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.sourcelink.json
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.dll
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\refint\MyFirstApp.dll
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.pdb
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\MyFirstApp.genruntimeconfig.cache
+C:\Users\yahya\MyFirstApp\projek\obj\Debug\net6.0-windows\ref\MyFirstApp.dll
