@@ -4,16 +4,35 @@
 Nisaa' Husnia Yahya 
 2213020099 | 3-A**
 
-📝 ToDoListApp
-ToDoListApp adalah aplikasi desktop sederhana berbasis Windows Forms yang memungkinkan pengguna untuk mengelola daftar tugas harian. Aplikasi ini dirancang untuk membantu pengguna menambahkan, menyelesaikan, dan menghapus tugas dengan antarmuka yang intuitif.​
+# 📝 ToDoListApp
 
-🎯 Fitur
-Menambahkan tugas baru dengan judul.​
+Aplikasi To-Do List sederhana berbasis Windows Forms menggunakan C#.
 
-Menampilkan daftar tugas dengan status selesai atau belum.​
+## 📂 Struktur Proyek
 
-Menandai tugas sebagai selesai.​
+ToDoListApp/
+├── Models/
+│   └── TaskItem.cs
+├── Services/
+│   └── TaskManager.cs
+├── Forms/
+│   ├── MainForm.cs
+│   ├── MainForm.Designer.cs
+├── Program.cs
+├── ToDoListApp.csproj
+├── README.md
 
-Menghapus tugas dari daftar.​
+## 🚀 Fitur
 
-Antarmuka pengguna yang sederhana dan mudah digunakan.
+- Menambahkan tugas baru
+- Menandai tugas sebagai selesai
+- Menghapus tugas dari daftar
+
+## 🛠️ Teknologi
+
+- C#
+- Windows Forms (.NET 9.0)
+
+
+
+
