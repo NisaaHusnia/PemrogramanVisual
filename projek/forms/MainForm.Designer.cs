@@ -9,6 +9,7 @@ namespace ToDoListApp.Forms
         private Button btnAdd;
         private Button btnComplete;
         private Button btnDelete;
+        private Button btnTestDb;
         private ListBox lstTasks;
 
         /// <summary>
@@ -34,6 +35,7 @@ namespace ToDoListApp.Forms
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnComplete = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.btnTestDb = new System.Windows.Forms.Button();
             this.lstTasks = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
@@ -74,18 +76,29 @@ namespace ToDoListApp.Forms
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // btnTestDb
+            // 
+            this.btnTestDb.Location = new System.Drawing.Point(174, 226);
+            this.btnTestDb.Name = "btnTestDb";
+            this.btnTestDb.Size = new System.Drawing.Size(100, 23);
+            this.btnTestDb.TabIndex = 4;
+            this.btnTestDb.Text = "Test Koneksi DB";
+            this.btnTestDb.UseVisualStyleBackColor = true;
+            this.btnTestDb.Click += new System.EventHandler(this.btnTestDb_Click);
+            // 
             // lstTasks
             // 
             this.lstTasks.FormattingEnabled = true;
             this.lstTasks.Location = new System.Drawing.Point(12, 38);
             this.lstTasks.Name = "lstTasks";
             this.lstTasks.Size = new System.Drawing.Size(341, 173);
-            this.lstTasks.TabIndex = 4;
+            this.lstTasks.TabIndex = 5;
             // 
             // MainForm
             // 
             this.ClientSize = new System.Drawing.Size(365, 261);
             this.Controls.Add(this.lstTasks);
+            this.Controls.Add(this.btnTestDb);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnComplete);
             this.Controls.Add(this.btnAdd);

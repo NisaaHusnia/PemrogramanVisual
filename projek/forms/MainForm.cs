@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using ToDoListApp.Services;
+using ToDoListApp.Database;
 
 namespace ToDoListApp.Forms
 {
@@ -54,6 +54,13 @@ namespace ToDoListApp.Forms
             {
                 lstTasks.Items.Add(task.ToString());
             }
+        }
+
+        // ✅ Ditempatkan di dalam class MainForm
+        private void btnTestDb_Click(object sender, EventArgs e)
+        {
+            var db = new DatabaseConnector();
+            db.TestConnection();
         }
     }
 }

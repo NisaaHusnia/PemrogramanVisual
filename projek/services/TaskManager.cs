@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using ToDoListApp.Models;
 
-namespace ToDoListApp.Services
+namespace ToDoListApp.Database
 {
     public class TaskManager
     {
