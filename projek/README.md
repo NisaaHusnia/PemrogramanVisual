@@ -8,20 +8,6 @@ Nisaa' Husnia Yahya
 
 Aplikasi To-Do List sederhana berbasis Windows Forms menggunakan C#.
 
-## 📂 Struktur Proyek
-
-ToDoListApp/
-├── Models/
-│   └── TaskItem.cs
-├── Services/
-│   └── TaskManager.cs
-├── Forms/
-│   ├── MainForm.cs
-│   ├── MainForm.Designer.cs
-├── Program.cs
-├── ToDoListApp.csproj
-├── README.md
-
 ## 🚀 Fitur
 
 - Menambahkan tugas baru
