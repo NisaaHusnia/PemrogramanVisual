@@ -66,3 +66,15 @@ C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win\lib\net9.
 C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\BouncyCastle.Cryptography.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\Google.Protobuf.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\K4os.Compression.LZ4.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\K4os.Compression.LZ4.Streams.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\K4os.Hash.xxHash.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\MySql.Data.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\ZstdSharp.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-x64\native\comerr64.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-x64\native\gssapi64.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-x64\native\k5sprt64.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-x64\native\krb5_64.dll
+C:\Users\yahya\MyFirstApp\projek\bin\Debug\net9.0-windows\runtimes\win-x64\native\krbcc64.dll

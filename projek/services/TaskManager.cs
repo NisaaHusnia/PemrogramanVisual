@@ -1,63 +1,36 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 using ToDoListApp.Models;
 
-namespace ToDoListApp.Database
+namespace ToDoListApp.Services
 {
     public class TaskManager
     {
-        private readonly List<TaskItem> _tasks = new();
+        private readonly DatabaseManager _db;
 
-        public IReadOnlyList<TaskItem> Tasks => _tasks.AsReadOnly();
-
-        // Add a task
-        public void AddTask(TaskItem task)
+        public TaskManager()
         {
-            _tasks.Add(task);
+            var cs = "server=localhost;user=root;password=;database=todolist_db;";
+            _db = new DatabaseManager(cs);
         }
 
-        // Mark task as completed
-        public void MarkTaskAsCompleted(int index)
+        public void Add(string judul, string deskripsi, DateTime? tenggat)
         {
-            if (IsValidIndex(index))
-                _tasks[index].MarkAsCompleted();
-        }
-
-        // Remove a task
-        public void RemoveTask(int index)
-        {
-            if (IsValidIndex(index))
-                _tasks.RemoveAt(index);
-        }
-
-        // Edit the task title
-        public void EditTaskTitle(int index, string newTitle)
-        {
-            if (IsValidIndex(index))
-                _tasks[index].Rename(newTitle);
-        }
-
-        // Load tasks from a file
-        public void LoadFromFile(string path)
-        {
-            if (File.Exists(path))
+            var t = new TaskItem
             {
-                var tasks = JsonSerializer.Deserialize<List<TaskItem>>(File.ReadAllText(path));
-                _tasks.Clear();
-                _tasks.AddRange(tasks);
-            }
+                Judul = judul,
+                Deskripsi = deskripsi,
+                TanggalDibuat = DateTime.Now,
+                TenggatWaktu = tenggat,
+                Selesai = false
+            };
+            _db.AddTask(t);
         }
 
-        // Save tasks to a file
-        public void SaveToFile(string path)
-        {
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            File.WriteAllText(path, JsonSerializer.Serialize(_tasks, options));
-        }
+        public List<TaskItem> GetAll() => _db.LoadTasks();
 
-        // Check if the index is valid
-        private bool IsValidIndex(int index) => index >= 0 && index < _tasks.Count;
+        public void Update(TaskItem t) => _db.UpdateTask(t);
+
+        public void Delete(int id) => _db.DeleteTask(id);
     }
 }

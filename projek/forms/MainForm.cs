@@ -1,113 +1,90 @@
 using System;
 using System.Windows.Forms;
-using ToDoListApp.Database;
+using ToDoListApp.Services;
 using ToDoListApp.Models;
 
 namespace ToDoListApp.Forms
 {
     public partial class MainForm : Form
     {
-        private readonly TaskManager _taskManager = new();
+        private readonly TaskManager taskManager = new TaskManager();
+        private int? selectedTaskId = null;
 
         public MainForm()
         {
             InitializeComponent();
-            InitializeTimer();
+            LoadTasks();
         }
 
-        // Initialize the timer for updating the clock
-        private void InitializeTimer()
+        private void LoadTasks()
         {
-            var timer = new Timer { Interval = 1000 }; // Update every second
-            timer.Tick += (s, e) => lblTime.Text = DateTime.Now.ToString("HH:mm:ss");
-            timer.Start();
+            lvTasks.Items.Clear();
+            foreach (var task in taskManager.GetAll())
+            {
+                var item = new ListViewItem(task.Id.ToString());
+                item.SubItems.Add(task.Judul);
+                item.SubItems.Add(task.Deskripsi);
+                item.SubItems.Add(task.TanggalDibuat.ToString("g"));
+                item.SubItems.Add(task.TenggatWaktu?.ToString("g") ?? "");
+                item.SubItems.Add(task.Selesai ? "✓" : "✗");
+                lvTasks.Items.Add(item);
+            }
+            ClearFields();
         }
 
-        // Load existing tasks on form load
-        private void MainForm_Load(object sender, EventArgs e)
+        private void ClearFields()
         {
-            _taskManager.LoadFromFile("tasks.json");
-            UpdateTaskList();
+            txtJudul.Text = "";
+            txtDeskripsi.Text = "";
+            dtpTenggat.Value = DateTime.Now;
+            chkSelesai.Checked = false;
+            selectedTaskId = null;
         }
 
-        // Add a new task
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var title = txtTaskTitle.Text.Trim();
-            if (!string.IsNullOrEmpty(title))
-            {
-                var task = new TaskItem(title) { Deadline = dtpDeadline.Value };
-                _taskManager.AddTask(task);
-                txtTaskTitle.Clear();
-                UpdateTaskList();
-            }
-            else
-            {
-                MessageBox.Show("Judul tugas tidak boleh kosong.", "Peringatan",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            taskManager.Add(txtJudul.Text, txtDeskripsi.Text, dtpTenggat.Value);
+            LoadTasks();
         }
 
-        // Edit selected task
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            int idx = lstTasks.SelectedIndex;
-            if (idx >= 0)
+            if (selectedTaskId != null)
             {
-                var newTitle = Prompt.ShowDialog("Edit Judul", "Masukkan judul baru:",
-                    _taskManager.Tasks[idx].Title);
-                if (!string.IsNullOrWhiteSpace(newTitle))
+                var task = taskManager.GetAll().Find(t => t.Id == selectedTaskId);
+                if (task != null)
                 {
-                    _taskManager.EditTaskTitle(idx, newTitle);
-                    _taskManager.Tasks[idx].Deadline = dtpDeadline.Value;
-                    UpdateTaskList();
+                    task.Judul = txtJudul.Text;
+                    task.Deskripsi = txtDeskripsi.Text;
+                    task.TenggatWaktu = dtpTenggat.Value;
+                    task.Selesai = chkSelesai.Checked;
+                    taskManager.Update(task);
+                    LoadTasks();
                 }
             }
         }
 
-        // Mark selected task as completed
-        private void btnComplete_Click(object sender, EventArgs e)
-        {
-            int idx = lstTasks.SelectedIndex;
-            if (idx >= 0)
-            {
-                _taskManager.MarkTaskAsCompleted(idx);
-                UpdateTaskList();
-            }
-        }
-
-        // Delete selected task
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            int idx = lstTasks.SelectedIndex;
-            if (idx >= 0)
+            if (selectedTaskId != null)
             {
-                _taskManager.RemoveTask(idx);
-                UpdateTaskList();
+                taskManager.Delete((int)selectedTaskId);
+                LoadTasks();
             }
         }
 
-        // Update list box
-        private void UpdateTaskList()
+        private void lvTasks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            lstTasks.Items.Clear();
-            foreach (var task in _taskManager.Tasks)
+            if (lvTasks.SelectedItems.Count > 0)
             {
-                var status = task.IsCompleted ? "[X]" : "[ ]";
-                var dl = task.Deadline.HasValue
-                    ? task.Deadline.Value.ToString("dd/MM/yyyy")
-                    : "No deadline";
-                lstTasks.Items.Add(
-                    $"{status} {task.Title} | Created: {task.CreatedAt:dd/MM/yyyy HH:mm} | Deadline: {dl}"
-                );
-            }
-        }
+                var item = lvTasks.SelectedItems[0];
+                selectedTaskId = int.Parse(item.Text);
 
-        // Save tasks when closing
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            _taskManager.SaveToFile("tasks.json");
-            base.OnFormClosing(e);
+                txtJudul.Text = item.SubItems[1].Text;
+                txtDeskripsi.Text = item.SubItems[2].Text;
+                dtpTenggat.Value = DateTime.TryParse(item.SubItems[4].Text, out var t) ? t : DateTime.Now;
+                chkSelesai.Checked = item.SubItems[5].Text == "✓";
+            }
         }
     }
 }
