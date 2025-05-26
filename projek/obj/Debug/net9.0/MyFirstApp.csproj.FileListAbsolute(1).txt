@@ -1,0 +1,14 @@
+C:\Users\yahya\MyFirstApp\bin\Debug\net9.0\MyFirstApp.exe
+C:\Users\yahya\MyFirstApp\bin\Debug\net9.0\MyFirstApp.deps.json
+C:\Users\yahya\MyFirstApp\bin\Debug\net9.0\MyFirstApp.runtimeconfig.json
+C:\Users\yahya\MyFirstApp\bin\Debug\net9.0\MyFirstApp.dll
+C:\Users\yahya\MyFirstApp\bin\Debug\net9.0\MyFirstApp.pdb
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\MyFirstApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\MyFirstApp.AssemblyInfoInputs.cache
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\MyFirstApp.AssemblyInfo.cs
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\MyFirstApp.csproj.CoreCompileInputs.cache
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\MyFirstApp.dll
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\refint\MyFirstApp.dll
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\MyFirstApp.pdb
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\MyFirstApp.genruntimeconfig.cache
+C:\Users\yahya\MyFirstApp\obj\Debug\net9.0\ref\MyFirstApp.dll

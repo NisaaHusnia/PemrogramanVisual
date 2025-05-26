@@ -1,14 +1,21 @@
 using System;
 
-namespace ToDoListApp.Models
+namespace YourNamespace
 {
     public class TaskItem
     {
-        public int Id { get; set; }
-        public string Judul { get; set; }
-        public string Deskripsi { get; set; }
-        public DateTime TanggalDibuat { get; set; }
-        public DateTime? TenggatWaktu { get; set; }
-        public bool Selesai { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime Deadline { get; set; }  // DateTime seharusnya dikenali di sini
+        public bool Completed { get; set; }
+
+        // Konstruktor
+        public TaskItem(string title, string description, DateTime deadline, bool completed)
+        {
+            Title = title;
+            Description = description;
+            Deadline = deadline;
+            Completed = completed;
+        }
     }
 }
