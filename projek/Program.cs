@@ -1,18 +1,33 @@
 ﻿using System;
 using System.Windows.Forms;
-using MyFirstApp.projek.views; // Tambahkan ini di atas
+using MyFirstApp.projek.Utilities;
+using MyFirstApp.projek.views;
 
-
-static class Program
+namespace MyFirstApp
 {
-    [STAThread]
-    static void Main()
+    static class Program
     {
-        Application.EnableVisualStyles();
-        Application.SetCompatibleTextRenderingDefault(false);
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-        FormLogin loginForm = new FormLogin();
-        Application.Run(loginForm);
+            // Inisialisasi koneksi database
+            DatabaseManager.Initialize("server=localhost;uid=root;pwd=;database=todolist_db");
+
+            // Tampilkan form login
+            using (FormLogin loginForm = new FormLogin())
+            {
+                if (loginForm.ShowDialog() == DialogResult.OK)
+                {
+                    Application.Run(new MainForm()); // Masuk ke MainForm jika login berhasil
+                }
+                else
+                {
+                    Application.Exit(); // Keluar jika login dibatalkan
+                }
+            }
+        }
     }
 }
-

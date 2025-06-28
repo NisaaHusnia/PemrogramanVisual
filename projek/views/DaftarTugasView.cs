@@ -1,19 +1,16 @@
 using System;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient; // Pastikan sudah install MySql.Data via NuGet
+using MySql.Data.MySqlClient;
+using MyFirstApp.projek.Utilities;
 
 namespace MyFirstApp.projek.views
 {
     public partial class DaftarTugasView : UserControl
     {
-        private ListView lvDaftarTugas;
-        private ColumnHeader colJudul, colDeskripsi, colDeadline, colStatus;
         private Label lblTitle;
-
-        // Ganti connectionString sesuai konfigurasi database kamu
-        private string connectionString = "server=localhost;uid=root;pwd=your_password;database=todolist_db;";
+        private ListView lvDaftarTugas;
+        private Button btnHapus, btnRefresh;
 
         public DaftarTugasView()
         {
@@ -23,57 +20,56 @@ namespace MyFirstApp.projek.views
 
         private void InitializeComponent()
         {
-            this.lblTitle = new Label();
-            this.lvDaftarTugas = new ListView();
-            this.colJudul = new ColumnHeader();
-            this.colDeskripsi = new ColumnHeader();
-            this.colDeadline = new ColumnHeader();
-            this.colStatus = new ColumnHeader();
+            lblTitle = new Label
+            {
+                Text = "Daftar Tugas",
+                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
+                Location = new Point(20, 20),
+                AutoSize = true
+            };
 
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.Text = "Daftar Tugas";
-            this.lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-            this.lblTitle.Location = new Point(20, 20);
-            this.lblTitle.AutoSize = true;
+            lvDaftarTugas = new ListView
+            {
+                Location = new Point(20, 70),
+                Size = new Size(740, 360),
+                View = View.Details,
+                FullRowSelect = true,
+                GridLines = true,
+                HideSelection = false
+            };
 
-            // 
-            // lvDaftarTugas
-            // 
-            this.lvDaftarTugas.Location = new Point(20, 70);
-            this.lvDaftarTugas.Size = new Size(760, 400);
-            this.lvDaftarTugas.View = View.Details;
-            this.lvDaftarTugas.FullRowSelect = true;
-            this.lvDaftarTugas.GridLines = true;
-            this.lvDaftarTugas.HideSelection = false;
-            this.lvDaftarTugas.MultiSelect = false;
+            lvDaftarTugas.Columns.Add("Judul", 200);
+            lvDaftarTugas.Columns.Add("Deskripsi", 300);
+            lvDaftarTugas.Columns.Add("Deadline", 120);
+            lvDaftarTugas.Columns.Add("Status", 100);
 
-            this.lvDaftarTugas.Columns.AddRange(new ColumnHeader[] {
-                this.colJudul, this.colDeskripsi, this.colDeadline, this.colStatus
-            });
+            btnHapus = new Button
+            {
+                Text = "Hapus",
+                Location = new Point(20, 450),
+                Size = new Size(80, 35),
+                BackColor = Color.IndianRed,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+            btnHapus.Click += BtnHapus_Click;
 
-            // 
-            // Columns
-            // 
-            this.colJudul.Text = "Judul";
-            this.colJudul.Width = 200;
+            btnRefresh = new Button
+            {
+                Text = "Refresh",
+                Location = new Point(120, 450),
+                Size = new Size(80, 35),
+                BackColor = Color.SteelBlue,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+            btnRefresh.Click += BtnRefresh_Click;
 
-            this.colDeskripsi.Text = "Deskripsi";
-            this.colDeskripsi.Width = 350;
-
-            this.colDeadline.Text = "Deadline";
-            this.colDeadline.Width = 120;
-
-            this.colStatus.Text = "Status";
-            this.colStatus.Width = 90;
-
-            // 
-            // DaftarTugasView (UserControl)
-            // 
-            this.Controls.Add(this.lblTitle);
-            this.Controls.Add(this.lvDaftarTugas);
-            this.Size = new Size(800, 500);
+            this.Controls.Add(lblTitle);
+            this.Controls.Add(lvDaftarTugas);
+            this.Controls.Add(btnHapus);
+            this.Controls.Add(btnRefresh);
+            this.Size = new Size(800, 520);
         }
 
         private void LoadDataFromDatabase()
@@ -82,50 +78,96 @@ namespace MyFirstApp.projek.views
 
             try
             {
-                using (MySqlConnection conn = new MySqlConnection(connectionString))
+                using (MySqlConnection conn = DatabaseManager.GetConnection())
                 {
                     conn.Open();
-
-                    string query = "SELECT judul, deskripsi, deadline, status FROM tugas ORDER BY deadline ASC";
+                    string query = "SELECT judul, deskripsi, tenggat_waktu, selesai FROM tugas ORDER BY tenggat_waktu ASC";
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        while (reader.Read())
                         {
-                            while (reader.Read())
-                            {
-                                string judul = reader.GetString("judul");
-                                string deskripsi = reader.GetString("deskripsi");
-                                DateTime deadline = reader.GetDateTime("deadline");
-                                string status = reader.GetString("status");
+                            string judul = reader.GetString("judul");
+                            string deskripsi = reader.GetString("deskripsi");
+                            DateTime deadline = reader.GetDateTime("tenggat_waktu");
+                            int statusValue = reader.GetInt32("selesai");
+                            string statusStr = statusValue == 1 ? "Selesai" : "Belum Selesai";
 
-                                ListViewItem item = new ListViewItem(judul);
-                                item.SubItems.Add(deskripsi);
-                                item.SubItems.Add(deadline.ToString("dd MMM yyyy"));
-                                item.SubItems.Add(status);
+                            ListViewItem item = new ListViewItem(judul);
+                            item.SubItems.Add(deskripsi);
+                            item.SubItems.Add(deadline.ToString("dd MMM yyyy"));
+                            item.SubItems.Add(statusStr);
 
-                                // Warna baris berdasarkan status
-                                if (status == "Selesai")
-                                {
-                                    item.BackColor = Color.LightGreen;
-                                }
-                                else if (status == "Sedang Dikerjakan")
-                                {
-                                    item.BackColor = Color.LightYellow;
-                                }
-                                else // Belum Selesai
-                                {
-                                    item.BackColor = Color.LightCoral;
-                                }
+                            // Pewarnaan
+                            item.BackColor = statusValue == 1 ? Color.LightGreen : Color.LightCoral;
 
-                                lvDaftarTugas.Items.Add(item);
-                            }
+                            lvDaftarTugas.Items.Add(item);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Gagal mengambil data dari database.\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Gagal mengambil data dari database.\n" + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnRefresh_Click(object sender, EventArgs e)
+        {
+            LoadDataFromDatabase();
+        }
+
+        private void BtnHapus_Click(object sender, EventArgs e)
+        {
+            if (lvDaftarTugas.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Pilih tugas yang ingin dihapus.",
+                    "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string judul = lvDaftarTugas.SelectedItems[0].Text;
+
+            DialogResult confirm = MessageBox.Show(
+                $"Yakin ingin menghapus tugas '{judul}'?",
+                "Konfirmasi Hapus",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (confirm == DialogResult.Yes)
+            {
+                try
+                {
+                    using (MySqlConnection conn = DatabaseManager.GetConnection())
+                    {
+                        conn.Open();
+                        string query = "DELETE FROM tugas WHERE judul = @judul LIMIT 1";
+                        using (MySqlCommand cmd = new MySqlCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@judul", judul);
+                            int rows = cmd.ExecuteNonQuery();
+
+                            if (rows > 0)
+                            {
+                                MessageBox.Show("Tugas berhasil dihapus.",
+                                    "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                LoadDataFromDatabase();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Tugas gagal dihapus.",
+                                    "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Terjadi kesalahan saat menghapus:\n" + ex.Message,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

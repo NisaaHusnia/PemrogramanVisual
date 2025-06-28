@@ -1,5 +1,5 @@
-using MyFirstApp.projek.services;
 using MySql.Data.MySqlClient;
+using MyFirstApp.projek.Utilities;
 
 namespace MyFirstApp.projek.controllers
 {
@@ -11,23 +11,16 @@ namespace MyFirstApp.projek.controllers
             {
                 conn.Open();
                 string query = "SELECT * FROM users WHERE username = @username AND password = @password";
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@username", username);
-                    cmd.Parameters.AddWithValue("@password", password);
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.HasRows)
-                        {
-                            SessionManager.IsLoggedIn = true;
-                            SessionManager.Username = username;
-                            return true;
-                        }
-                    }
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@username", username);
+                cmd.Parameters.AddWithValue("@password", password); // langsung cocokkan plaintext
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    return reader.HasRows; // login berhasil jika ada hasil
                 }
             }
-            return false;
         }
     }
 }

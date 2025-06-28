@@ -1,113 +1,85 @@
-using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using MySql.Data.MySqlClient;
+using MyFirstApp.projek.Utilities;
 
-public class TaskModel
+namespace MyFirstApp.projek.models
 {
-    private string connectionString = "server=localhost;database=todolist_db;uid=root;pwd=;";
-
-    public int Id { get; set; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-
-    // Mapping to domain
-    public MyFirstApp.projek.models.Task ToDomain()
+    public static class TaskModel
     {
-        return new MyFirstApp.projek.models.Task
+        public static bool Add(TodoTask task)
         {
-            Id = this.Id,
-            Title = this.Title,
-            Description = this.Description
-        };
-    }
-
-    // Mapping from domain
-    public static TaskModel FromDomain(MyFirstApp.projek.models.Task task)
-    {
-        return new TaskModel
-        {
-            Id = task.Id,
-            Title = task.Title,
-            Description = task.Description
-        };
-    }
-
-    // Get all tasks from DB
-    public List<MyFirstApp.projek.models.Task> GetAll()
-    {
-        List<MyFirstApp.projek.models.Task> tasks = new List<MyFirstApp.projek.models.Task>();
-
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
-        {
-            connection.Open();
-            string query = "SELECT id, title, description FROM tasks";
-
-            using (MySqlCommand command = new MySqlCommand(query, connection))
-            using (MySqlDataReader reader = command.ExecuteReader())
+            using (var conn = DatabaseManager.GetConnection())
             {
-                while (reader.Read())
+                conn.Open();
+                string query = "INSERT INTO tugas (judul, deskripsi, tenggat_waktu, selesai) VALUES (@judul, @deskripsi, @tenggat_waktu, @selesai)";
+                using (var cmd = new MySqlCommand(query, conn))
                 {
-                    TaskModel taskModel = new TaskModel
-                    {
-                        Id = reader.GetInt32("id"),
-                        Title = reader.GetString("title"),
-                        Description = reader.GetString("description")
-                    };
-                    tasks.Add(taskModel.ToDomain());
+                    cmd.Parameters.AddWithValue("@judul", task.Title);
+                    cmd.Parameters.AddWithValue("@deskripsi", task.Description);
+                    cmd.Parameters.AddWithValue("@tenggat_waktu", task.Deadline);
+                    cmd.Parameters.AddWithValue("@selesai", task.Status == "Selesai" ? 1 : 0);
+                    return cmd.ExecuteNonQuery() > 0;
                 }
             }
         }
 
-        return tasks;
-    }
-
-    // Insert task to DB
-    public bool Insert(TaskModel task)
-    {
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        public static bool Update(string oldTitle, TodoTask task)
         {
-            connection.Open();
-            string query = "INSERT INTO tasks (title, description) VALUES (@title, @description)";
-            using (MySqlCommand command = new MySqlCommand(query, connection))
+            using (var conn = DatabaseManager.GetConnection())
             {
-                command.Parameters.AddWithValue("@title", task.Title);
-                command.Parameters.AddWithValue("@description", task.Description);
-                int rows = command.ExecuteNonQuery();
-                return rows > 0;
+                conn.Open();
+                string query = "UPDATE tugas SET judul = @judul, deskripsi = @deskripsi, tenggat_waktu = @tenggat_waktu, selesai = @selesai WHERE judul = @oldTitle";
+                using (var cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@judul", task.Title);
+                    cmd.Parameters.AddWithValue("@deskripsi", task.Description);
+                    cmd.Parameters.AddWithValue("@tenggat_waktu", task.Deadline);
+                    cmd.Parameters.AddWithValue("@selesai", task.Status == "Selesai" ? 1 : 0);
+                    cmd.Parameters.AddWithValue("@oldTitle", oldTitle);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
             }
         }
-    }
 
-    // Update task
-    public bool Update(TaskModel task)
-    {
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        public static bool Delete(string title)
         {
-            connection.Open();
-            string query = "UPDATE tasks SET title=@title, description=@description WHERE id=@id";
-            using (MySqlCommand command = new MySqlCommand(query, connection))
+            using (var conn = DatabaseManager.GetConnection())
             {
-                command.Parameters.AddWithValue("@title", task.Title);
-                command.Parameters.AddWithValue("@description", task.Description);
-                command.Parameters.AddWithValue("@id", task.Id);
-                int rows = command.ExecuteNonQuery();
-                return rows > 0;
+                conn.Open();
+                string query = "DELETE FROM tugas WHERE judul = @judul";
+                using (var cmd = new MySqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@judul", title);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
             }
         }
-    }
 
-    // Delete task
-    public bool Delete(int id)
-    {
-        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        public static List<TodoTask> GetAll()
         {
-            connection.Open();
-            string query = "DELETE FROM tasks WHERE id=@id";
-            using (MySqlCommand command = new MySqlCommand(query, connection))
+            List<TodoTask> list = new List<TodoTask>();
+            using (var conn = DatabaseManager.GetConnection())
             {
-                command.Parameters.AddWithValue("@id", id);
-                int rows = command.ExecuteNonQuery();
-                return rows > 0;
+                conn.Open();
+                string query = "SELECT * FROM tugas ORDER BY tenggat_waktu ASC";
+                using (var cmd = new MySqlCommand(query, conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new TodoTask
+                        {
+                            Id = Convert.ToInt32(reader["id"]),
+                            Title = reader["judul"].ToString(),
+                            Description = reader["deskripsi"].ToString(),
+                            Deadline = Convert.ToDateTime(reader["tenggat_waktu"]),
+                            Status = Convert.ToInt32(reader["selesai"]) == 1 ? "Selesai" : "Belum Selesai"
+                        });
+                    }
+                }
             }
+            return list;
         }
     }
 }

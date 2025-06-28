@@ -1,6 +1,6 @@
 using System;
 
-namespace YourNamespace
+namespace ToDoListApp
 {
     public class TaskItem
     {

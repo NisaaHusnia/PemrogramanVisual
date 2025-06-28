@@ -1,33 +1,29 @@
-using System.Collections.Generic;
+using System;
+using System.Collections.Generic; // <-- WAJIB untuk List<>
 using MyFirstApp.projek.models;
 
-public class TaskController
+namespace MyFirstApp.projek.controllers
 {
-    private TaskModel taskModel = new TaskModel();
-
-    // Get all tasks as domain model list
-    public List<Task> GetTasks()
+    public class TaskController
     {
-        return taskModel.GetAll();
-    }
+        public void SimpanTugas(TodoTask task)
+        {
+            TaskModel.Add(task);
+        }
 
-    // Add new task
-    public bool AddTask(Task task)
-    {
-        TaskModel model = TaskModel.FromDomain(task);
-        return taskModel.Insert(model);
-    }
+        public bool EditTugas(string oldTitle, TodoTask updatedTask)
+        {
+            return TaskModel.Update(oldTitle, updatedTask);
+        }
 
-    // Update existing task
-    public bool UpdateTask(Task task)
-    {
-        TaskModel model = TaskModel.FromDomain(task);
-        return taskModel.Update(model);
-    }
+        public bool HapusTugas(string title)
+        {
+            return TaskModel.Delete(title);
+        }
 
-    // Delete task by id
-    public bool DeleteTask(int id)
-    {
-        return taskModel.Delete(id);
+        public List<TodoTask> AmbilSemuaTugas()
+        {
+            return TaskModel.GetAll();
+        }
     }
 }

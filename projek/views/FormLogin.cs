@@ -1,9 +1,7 @@
 using System;
 using System.Windows.Forms;
-using MyFirstApp.projek.controllers;      // Gunakan controller
-using MyFirstApp.projek.services;
+using MyFirstApp.projek.controllers;
 using MyFirstApp.projek.views;
-          // Untuk form lain (FormDaftar, FormDashboard)
 
 namespace MyFirstApp.projek.views
 {
@@ -13,7 +11,7 @@ namespace MyFirstApp.projek.views
         {
             InitializeComponent();
 
-            // Navigasi Enter
+            // Navigasi enter keyboard
             txtUsername.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter) txtPassword.Focus();
@@ -37,7 +35,7 @@ namespace MyFirstApp.projek.views
             }
 
             AuthController auth = new AuthController();
-            bool success = false;
+            bool success;
 
             try
             {
@@ -51,10 +49,8 @@ namespace MyFirstApp.projek.views
 
             if (success)
             {
-                // Login berhasil
-                FormDashboard dashboard = new FormDashboard();
-                dashboard.Show();
-                this.Hide();
+                this.DialogResult = DialogResult.OK; // Sinyal ke Program.cs bahwa login berhasil
+                this.Close(); // Menutup form login
             }
             else
             {
@@ -66,7 +62,7 @@ namespace MyFirstApp.projek.views
         {
             this.Hide();
             FormDaftar formDaftar = new FormDaftar();
-            formDaftar.ShowDialog();
+            formDaftar.ShowDialog(); // Selesai daftar, kembali ke login
             this.Show();
         }
     }
