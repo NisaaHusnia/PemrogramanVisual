@@ -11,6 +11,8 @@ namespace MyFirstApp.projek.views
         private Label lblTitle;
         private ListView lvDaftarTugas;
         private Button btnHapus, btnRefresh;
+        private TableLayoutPanel layout;
+        private Panel panelTombol;
 
         public DaftarTugasView()
         {
@@ -20,56 +22,88 @@ namespace MyFirstApp.projek.views
 
         private void InitializeComponent()
         {
+            this.Dock = DockStyle.Fill;
+            this.BackColor = Color.White;
+
+            // === LABEL ===
             lblTitle = new Label
             {
-                Text = "Daftar Tugas",
-                Font = new Font("Segoe UI", 16F, FontStyle.Bold),
-                Location = new Point(20, 20),
-                AutoSize = true
+                Text = "📋 Daftar Tugas",
+                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(44, 62, 80),
+                AutoSize = true,
+                Margin = new Padding(20)
             };
 
+            // === LIST VIEW ===
             lvDaftarTugas = new ListView
             {
-                Location = new Point(20, 70),
-                Size = new Size(740, 360),
+                Dock = DockStyle.Fill,
                 View = View.Details,
                 FullRowSelect = true,
                 GridLines = true,
-                HideSelection = false
+                HideSelection = false,
+                Font = new Font("Segoe UI", 10F)
             };
 
             lvDaftarTugas.Columns.Add("Judul", 200);
-            lvDaftarTugas.Columns.Add("Deskripsi", 300);
-            lvDaftarTugas.Columns.Add("Deadline", 120);
-            lvDaftarTugas.Columns.Add("Status", 100);
+            lvDaftarTugas.Columns.Add("Deskripsi", 350);
+            lvDaftarTugas.Columns.Add("Deadline", 150);
+            lvDaftarTugas.Columns.Add("Status", 200);
 
+            // === BUTTON HAPUS ===
             btnHapus = new Button
             {
-                Text = "Hapus",
-                Location = new Point(20, 450),
-                Size = new Size(80, 35),
+                Text = "🗑️ Hapus",
+                Size = new Size(100, 40),
                 BackColor = Color.IndianRed,
                 ForeColor = Color.White,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 FlatStyle = FlatStyle.Flat
             };
+            btnHapus.FlatAppearance.BorderSize = 0;
             btnHapus.Click += BtnHapus_Click;
 
+            // === BUTTON REFRESH ===
             btnRefresh = new Button
             {
-                Text = "Refresh",
-                Location = new Point(120, 450),
-                Size = new Size(80, 35),
+                Text = "🔄 Refresh",
+                Size = new Size(100, 40),
                 BackColor = Color.SteelBlue,
                 ForeColor = Color.White,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
                 FlatStyle = FlatStyle.Flat
             };
+            btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += BtnRefresh_Click;
 
-            this.Controls.Add(lblTitle);
-            this.Controls.Add(lvDaftarTugas);
-            this.Controls.Add(btnHapus);
-            this.Controls.Add(btnRefresh);
-            this.Size = new Size(800, 520);
+            // === PANEL TOMBOL ===
+            panelTombol = new Panel
+            {
+                Height = 60,
+                Dock = DockStyle.Fill
+            };
+            btnHapus.Location = new Point(20, 10);
+            btnRefresh.Location = new Point(140, 10);
+            panelTombol.Controls.Add(btnHapus);
+            panelTombol.Controls.Add(btnRefresh);
+
+            // === LAYOUT ===
+            layout = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                RowCount = 3,
+                ColumnCount = 1
+            };
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));       // Title
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F)); // List
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F)); // Button Panel
+
+            layout.Controls.Add(lblTitle, 0, 0);
+            layout.Controls.Add(lvDaftarTugas, 0, 1);
+            layout.Controls.Add(panelTombol, 0, 2);
+
+            this.Controls.Add(layout);
         }
 
         private void LoadDataFromDatabase()
@@ -91,7 +125,11 @@ namespace MyFirstApp.projek.views
                             string deskripsi = reader.GetString("deskripsi");
                             DateTime deadline = reader.GetDateTime("tenggat_waktu");
                             int statusValue = reader.GetInt32("selesai");
-                            string statusStr = statusValue == 1 ? "Selesai" : "Belum Selesai";
+
+                            bool sudahLewat = deadline.Date < DateTime.Today && statusValue == 0;
+                            string statusStr = statusValue == 1
+                                ? "Selesai"
+                                : sudahLewat ? "Belum Selesai (❗Terlambat)" : "Belum Selesai";
 
                             ListViewItem item = new ListViewItem(judul);
                             item.SubItems.Add(deskripsi);
@@ -99,7 +137,12 @@ namespace MyFirstApp.projek.views
                             item.SubItems.Add(statusStr);
 
                             // Pewarnaan
-                            item.BackColor = statusValue == 1 ? Color.LightGreen : Color.LightCoral;
+                            if (statusValue == 1)
+                                item.BackColor = Color.Honeydew;
+                            else if (sudahLewat)
+                                item.BackColor = Color.LightPink;
+                            else
+                                item.BackColor = Color.MistyRose;
 
                             lvDaftarTugas.Items.Add(item);
                         }

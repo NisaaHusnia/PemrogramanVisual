@@ -20,7 +20,7 @@ namespace MyFirstApp.projek.views
 
         private void InitializeComponent()
         {
-            this.Size = new Size(800, 500);
+            this.Dock = DockStyle.Fill;
             this.BackColor = Color.White;
 
             // Judul

@@ -9,8 +9,9 @@ namespace MyFirstApp.projek.views
     {
         private Panel sidebar;
         private Panel panelKontenUtama;
-        private Button btnDashboard, btnTambahTugas, btnDaftarTugas;
+        private Button btnDashboard, btnTambahTugas, btnDaftarTugas, btnKeluar;
         private Label lblAppName;
+        private Panel panelAtas, panelBawah;
 
         public MainForm()
         {
@@ -25,6 +26,14 @@ namespace MyFirstApp.projek.views
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = true;
 
+            // === PANEL KONTEN UTAMA ===
+            panelKontenUtama = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.White
+            };
+            this.Controls.Add(panelKontenUtama); // Tambahkan dulu agar tidak menutupi sidebar
+
             // === SIDEBAR ===
             sidebar = new Panel
             {
@@ -34,17 +43,26 @@ namespace MyFirstApp.projek.views
             };
             this.Controls.Add(sidebar);
 
+            // === PANEL ATAS SIDEBAR (Label + Tombol Navigasi) ===
+            panelAtas = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 300, // Tinggi bisa disesuaikan
+                BackColor = Color.Transparent
+            };
+            sidebar.Controls.Add(panelAtas);
+
             // === LABEL APP ===
             lblAppName = new Label
             {
-                Text = "📝 MyTasks",
+                Text = "📝 ToDoList App",
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Top,
                 Height = 80
             };
-            sidebar.Controls.Add(lblAppName);
+            panelAtas.Controls.Add(lblAppName);
 
             // === TOMBOL ===
             btnDashboard = BuatButtonSidebar("📊 Dashboard");
@@ -56,17 +74,36 @@ namespace MyFirstApp.projek.views
             btnDaftarTugas = BuatButtonSidebar("📋 Daftar Tugas");
             btnDaftarTugas.Click += (s, e) => TampilkanKontenBaru(new DaftarTugasView());
 
-            sidebar.Controls.AddRange(new Control[] {
-                btnDashboard, btnTambahTugas, btnDaftarTugas
-            });
+            // Tambah tombol ke panel atas
+            panelAtas.Controls.Add(btnDaftarTugas);
+            panelAtas.Controls.Add(btnTambahTugas);
+            panelAtas.Controls.Add(btnDashboard);
+            panelAtas.Controls.SetChildIndex(lblAppName, 0); // Pastikan label tetap di atas
 
-            // === PANEL KONTEN UTAMA ===
-            panelKontenUtama = new Panel
+            // === PANEL BAWAH SIDEBAR (Tombol Keluar) ===
+            panelBawah = new Panel
             {
-                Dock = DockStyle.Fill,
-                BackColor = Color.White
+                Dock = DockStyle.Bottom,
+                Height = 70,
+                BackColor = Color.Transparent
             };
-            this.Controls.Add(panelKontenUtama);
+            sidebar.Controls.Add(panelBawah);
+
+            btnKeluar = new Button
+            {
+                Text = "🚪 Keluar",
+                Font = new Font("Segoe UI", 12),
+                ForeColor = Color.White,
+                BackColor = ColorTranslator.FromHtml("#C0392B"),
+                Dock = DockStyle.Fill,
+                FlatStyle = FlatStyle.Flat,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Padding = new Padding(20, 0, 0, 0)
+            };
+            btnKeluar.FlatAppearance.BorderSize = 0;
+            btnKeluar.Click += BtnKeluar_Click;
+
+            panelBawah.Controls.Add(btnKeluar);
         }
 
         private Button BuatButtonSidebar(string text)
@@ -94,6 +131,15 @@ namespace MyFirstApp.projek.views
             panelKontenUtama.Controls.Clear();
             konten.Dock = DockStyle.Fill;
             panelKontenUtama.Controls.Add(konten);
+        }
+
+        private void BtnKeluar_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Yakin ingin keluar?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
     }
 }

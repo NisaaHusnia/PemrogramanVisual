@@ -66,7 +66,8 @@ namespace MyFirstApp.projek.views
                 lblStatus, cmbStatus, btnSimpan, btnEdit, btnHapus, lvTugas
             });
 
-            this.Size = new Size(660, 560);
+            this.Dock = DockStyle.Fill;
+
         }
 
         private void btnSimpan_Click(object sender, EventArgs e)
