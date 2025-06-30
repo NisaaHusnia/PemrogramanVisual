@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yahya\\MyFirstApp\\projek\\MyFirstApp.csproj": {}
+    "C:\\Users\\yahya\\PROJEK\\projek\\MyFirstApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yahya\\MyFirstApp\\projek\\MyFirstApp.csproj": {
+    "C:\\Users\\yahya\\PROJEK\\projek\\MyFirstApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yahya\\MyFirstApp\\projek\\MyFirstApp.csproj",
+        "projectUniqueName": "C:\\Users\\yahya\\PROJEK\\projek\\MyFirstApp.csproj",
         "projectName": "MyFirstApp",
-        "projectPath": "C:\\Users\\yahya\\MyFirstApp\\projek\\MyFirstApp.csproj",
+        "projectPath": "C:\\Users\\yahya\\PROJEK\\projek\\MyFirstApp.csproj",
         "packagesPath": "C:\\Users\\yahya\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yahya\\MyFirstApp\\projek\\obj\\",
+        "outputPath": "C:\\Users\\yahya\\PROJEK\\projek\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

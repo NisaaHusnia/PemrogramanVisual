@@ -4,10 +4,13 @@ namespace MyFirstApp.projek.models
 {
     public class TodoTask
     {
-        public int Id { get; set; }
+        public int Id { get; set; }  // optional
         public string Title { get; set; }
         public string Description { get; set; }
-        public DateTime Deadline { get; set; } // Untuk 'tenggat_waktu'
-        public string Status { get; set; }     // Tampilkan "Selesai"/"Belum Selesai"
+        public DateTime Deadline { get; set; }
+        public string Status { get; set; }
+
+        // Tambahkan ini
+        public int UserId { get; set; }
     }
 }

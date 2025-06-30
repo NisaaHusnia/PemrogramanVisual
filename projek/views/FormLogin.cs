@@ -1,22 +1,25 @@
 using System;
+using System.Data;
 using System.Windows.Forms;
-using MyFirstApp.projek.controllers;
+using MySql.Data.MySqlClient;
 using MyFirstApp.projek.views;
+using MyFirstApp.projek.Utilities;
 
 namespace MyFirstApp.projek.views
 {
     public partial class FormLogin : Form
     {
+        private string connectionString = "Server=localhost;Database=todolist_db;Uid=root;Pwd=;";
+
         public FormLogin()
         {
             InitializeComponent();
 
-            // Navigasi enter keyboard
+            // Navigasi keyboard
             txtUsername.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter) txtPassword.Focus();
             };
-
             txtPassword.KeyDown += (s, e) =>
             {
                 if (e.KeyCode == Keys.Enter) btnLogin.PerformClick();
@@ -34,27 +37,39 @@ namespace MyFirstApp.projek.views
                 return;
             }
 
-            AuthController auth = new AuthController();
-            bool success;
-
             try
             {
-                success = auth.Login(username, password);
+                using var conn = new MySqlConnection(connectionString);
+                conn.Open();
+
+                string query = "SELECT id, username, password FROM users WHERE username = @username AND password = @password";
+                using var cmd = new MySqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@username", username);
+                cmd.Parameters.AddWithValue("@password", password);
+
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    int userId = Convert.ToInt32(reader["id"]);
+                    string uname = reader["username"].ToString();
+
+                    // Simpan session
+                    SessionManager.Login(userId, uname);
+
+                    // Pindah ke dashboard
+                    this.Hide();
+                    FormDashboard dashboard = new FormDashboard();
+                    dashboard.ShowDialog();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Username atau password salah.", "Login Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Terjadi kesalahan saat login:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (success)
-            {
-                this.DialogResult = DialogResult.OK; // Sinyal ke Program.cs bahwa login berhasil
-                this.Close(); // Menutup form login
-            }
-            else
-            {
-                MessageBox.Show("Username atau password salah.", "Login Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Gagal koneksi: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -62,7 +77,7 @@ namespace MyFirstApp.projek.views
         {
             this.Hide();
             FormDaftar formDaftar = new FormDaftar();
-            formDaftar.ShowDialog(); // Selesai daftar, kembali ke login
+            formDaftar.ShowDialog();
             this.Show();
         }
     }

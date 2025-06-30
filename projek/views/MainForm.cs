@@ -16,7 +16,7 @@ namespace MyFirstApp.projek.views
         public MainForm()
         {
             InitializeComponent();
-            TampilkanKontenBaru(new DashboardView());
+            TampilkanKontenBaru(new DashboardView()); // Kirim referensi MainForm ke Dashboard
         }
 
         private void InitializeComponent()
@@ -32,7 +32,7 @@ namespace MyFirstApp.projek.views
                 Dock = DockStyle.Fill,
                 BackColor = Color.White
             };
-            this.Controls.Add(panelKontenUtama); // Tambahkan dulu agar tidak menutupi sidebar
+            this.Controls.Add(panelKontenUtama);
 
             // === SIDEBAR ===
             sidebar = new Panel
@@ -43,44 +43,43 @@ namespace MyFirstApp.projek.views
             };
             this.Controls.Add(sidebar);
 
-            // === PANEL ATAS SIDEBAR (Label + Tombol Navigasi) ===
+            // === PANEL ATAS (Sidebar) ===
             panelAtas = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 300, // Tinggi bisa disesuaikan
+                Height = 300,
                 BackColor = Color.Transparent
             };
             sidebar.Controls.Add(panelAtas);
 
-            // === LABEL APP ===
+            // === LABEL APLIKASI ===
             lblAppName = new Label
             {
                 Text = "📝 ToDoList App",
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                ForeColor = ColorTranslator.FromHtml("#F1C40F"),
+                Font = new Font("Segoe UI", 18, FontStyle.Bold),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Top,
                 Height = 80
             };
             panelAtas.Controls.Add(lblAppName);
 
-            // === TOMBOL ===
+            // === TOMBOL NAVIGASI ===
             btnDashboard = BuatButtonSidebar("📊 Dashboard");
             btnDashboard.Click += (s, e) => TampilkanKontenBaru(new DashboardView());
 
             btnTambahTugas = BuatButtonSidebar("➕ Tambah Tugas");
-            btnTambahTugas.Click += (s, e) => TampilkanKontenBaru(new TambahTugasView());
+            btnTambahTugas.Click += (s, e) => TampilkanKontenBaru(new TambahTugasView(this));
 
             btnDaftarTugas = BuatButtonSidebar("📋 Daftar Tugas");
-            btnDaftarTugas.Click += (s, e) => TampilkanKontenBaru(new DaftarTugasView());
+            btnDaftarTugas.Click += (s, e) => TampilkanKontenBaru(new DaftarTugasView(this));
 
-            // Tambah tombol ke panel atas
             panelAtas.Controls.Add(btnDaftarTugas);
             panelAtas.Controls.Add(btnTambahTugas);
             panelAtas.Controls.Add(btnDashboard);
-            panelAtas.Controls.SetChildIndex(lblAppName, 0); // Pastikan label tetap di atas
+            panelAtas.Controls.SetChildIndex(lblAppName, 0);
 
-            // === PANEL BAWAH SIDEBAR (Tombol Keluar) ===
+            // === PANEL BAWAH SIDEBAR (Logout) ===
             panelBawah = new Panel
             {
                 Dock = DockStyle.Bottom,
@@ -91,8 +90,8 @@ namespace MyFirstApp.projek.views
 
             btnKeluar = new Button
             {
-                Text = "🚪 Keluar",
-                Font = new Font("Segoe UI", 12),
+                Text = "🚪 Logout",
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = ColorTranslator.FromHtml("#C0392B"),
                 Dock = DockStyle.Fill,
@@ -101,6 +100,8 @@ namespace MyFirstApp.projek.views
                 Padding = new Padding(20, 0, 0, 0)
             };
             btnKeluar.FlatAppearance.BorderSize = 0;
+            btnKeluar.MouseEnter += (s, e) => btnKeluar.BackColor = ColorTranslator.FromHtml("#E74C3C");
+            btnKeluar.MouseLeave += (s, e) => btnKeluar.BackColor = ColorTranslator.FromHtml("#C0392B");
             btnKeluar.Click += BtnKeluar_Click;
 
             panelBawah.Controls.Add(btnKeluar);
@@ -111,7 +112,7 @@ namespace MyFirstApp.projek.views
             var btn = new Button
             {
                 Text = $"  {text}",
-                Font = new Font("Segoe UI", 12, FontStyle.Regular),
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = ColorTranslator.FromHtml("#1A252F"),
                 FlatStyle = FlatStyle.Flat,
@@ -121,7 +122,7 @@ namespace MyFirstApp.projek.views
                 Padding = new Padding(20, 0, 0, 0)
             };
             btn.FlatAppearance.BorderSize = 0;
-            btn.MouseEnter += (s, e) => btn.BackColor = ColorTranslator.FromHtml("#3A6FA1");
+            btn.MouseEnter += (s, e) => btn.BackColor = ColorTranslator.FromHtml("#34495E");
             btn.MouseLeave += (s, e) => btn.BackColor = ColorTranslator.FromHtml("#1A252F");
             return btn;
         }
@@ -135,10 +136,9 @@ namespace MyFirstApp.projek.views
 
         private void BtnKeluar_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Yakin ingin keluar?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
+            if (MessageBox.Show("Yakin ingin logout?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                Application.Exit();
+                 Application.Exit();
             }
         }
     }

@@ -18,33 +18,24 @@ namespace MyFirstApp.projek.views
             panelContent.Controls.Add(uc);
         }
 
-        private void LoadDashboardView()
+        public void LoadDashboardView()
         {
-            var dashboardView = new DashboardView();
-            LoadView(dashboardView);
+            LoadView(new DashboardView());
         }
 
-        private void LoadDaftarTugasView()
+        public void LoadTambahTugasView()
         {
-            var daftarTugasView = new DaftarTugasView();
-            LoadView(daftarTugasView);
+            LoadView(new TambahTugasView());
         }
 
-        private void LoadTambahTugasView()
+        public void LoadDaftarTugasView()
         {
-            var tambahTugasView = new TambahTugasView();
-            LoadView(tambahTugasView);
+            LoadView(new DaftarTugasView());
         }
 
-        // **Event handlers harus ada di sini supaya cocok dengan Designer.cs**
         private void btnDashboard_Click(object sender, EventArgs e)
         {
             LoadDashboardView();
-        }
-
-        private void btnDaftarTugas_Click(object sender, EventArgs e)
-        {
-            LoadDaftarTugasView();
         }
 
         private void btnTambahTugas_Click(object sender, EventArgs e)
@@ -52,9 +43,14 @@ namespace MyFirstApp.projek.views
             LoadTambahTugasView();
         }
 
+        private void btnDaftarTugas_Click(object sender, EventArgs e)
+        {
+            LoadDaftarTugasView();
+        }
+
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Application.Restart(); // Kembali ke FormLogin
         }
     }
 }

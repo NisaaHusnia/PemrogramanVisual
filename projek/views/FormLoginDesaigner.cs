@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MyFirstApp.projek.views
@@ -6,6 +7,7 @@ namespace MyFirstApp.projek.views
     partial class FormLogin
     {
         private System.ComponentModel.IContainer components = null;
+        private Label lblTitle;
         private Label lblUsername;
         private Label lblPassword;
         private TextBox txtUsername;
@@ -16,14 +18,13 @@ namespace MyFirstApp.projek.views
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
             base.Dispose(disposing);
         }
 
         private void InitializeComponent()
         {
+            this.lblTitle = new Label();
             this.lblUsername = new Label();
             this.lblPassword = new Label();
             this.txtUsername = new TextBox();
@@ -32,73 +33,78 @@ namespace MyFirstApp.projek.views
             this.linkDaftar = new LinkLabel();
             this.SuspendLayout();
 
-            // Form Background and Font Color
-            this.BackColor = System.Drawing.Color.DarkBlue;
+            // FormLogin
+            this.BackColor = ColorTranslator.FromHtml("#1A252F");
+            this.ClientSize = new Size(500, 350);
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "Login";
+
+            // lblTitle
+            lblTitle.Text = "📝 ToDoList App";
+            lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTitle.ForeColor = Color.White;
+            lblTitle.AutoSize = true;
+            lblTitle.Location = new Point(150, 30);
 
             // lblUsername
-            this.lblUsername.AutoSize = true;
-            this.lblUsername.Location = new System.Drawing.Point(40, 40);
-            this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(75, 13);
-            this.lblUsername.TabIndex = 0;
-            this.lblUsername.Text = "Username:";
-            this.lblUsername.ForeColor = System.Drawing.Color.White;
-
-            // lblPassword
-            this.lblPassword.AutoSize = true;
-            this.lblPassword.Location = new System.Drawing.Point(40, 90);
-            this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(75, 13);
-            this.lblPassword.TabIndex = 1;
-            this.lblPassword.Text = "Password:";
-            this.lblPassword.ForeColor = System.Drawing.Color.White;
+            lblUsername.Text = "Username";
+            lblUsername.ForeColor = Color.White;
+            lblUsername.Font = new Font("Segoe UI", 10F);
+            lblUsername.Location = new Point(50, 90);
+            lblUsername.AutoSize = true;
 
             // txtUsername
-            this.txtUsername.Location = new System.Drawing.Point(120, 35);
-            this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(320, 20);
-            this.txtUsername.TabIndex = 2;
+            txtUsername = new TextBox();
+            txtUsername.Font = new Font("Segoe UI", 10F);
+            txtUsername.Location = new Point(50, 110);
+            txtUsername.Size = new Size(400, 30);
+
+            // lblPassword
+            lblPassword.Text = "Password";
+            lblPassword.ForeColor = Color.White;
+            lblPassword.Font = new Font("Segoe UI", 10F);
+            lblPassword.Location = new Point(50, 160);
+            lblPassword.AutoSize = true;
 
             // txtPassword
-            this.txtPassword.Location = new System.Drawing.Point(120, 85);
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(320, 20);
-            this.txtPassword.TabIndex = 3;
-            this.txtPassword.UseSystemPasswordChar = true;
+            txtPassword = new TextBox();
+            txtPassword.Font = new Font("Segoe UI", 10F);
+            txtPassword.Location = new Point(50, 180);
+            txtPassword.Size = new Size(400, 30);
+            txtPassword.UseSystemPasswordChar = true;
 
             // btnLogin
-            this.btnLogin.Location = new System.Drawing.Point(120, 125);
-            this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(320, 40);
-            this.btnLogin.TabIndex = 4;
-            this.btnLogin.Text = "Login";
-            this.btnLogin.UseVisualStyleBackColor = false;
-            this.btnLogin.BackColor = System.Drawing.Color.White;
-            this.btnLogin.ForeColor = System.Drawing.Color.DarkBlue;
-            this.btnLogin.Click += new EventHandler(this.btnLogin_Click);
+            btnLogin = new Button();
+            btnLogin.Text = "🔐 Login";
+            btnLogin.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnLogin.Size = new Size(400, 40);
+            btnLogin.Location = new Point(50, 230);
+            btnLogin.BackColor = ColorTranslator.FromHtml("#007BFF");
+            btnLogin.ForeColor = Color.White;
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.FlatAppearance.BorderSize = 0;
+            btnLogin.Click += new EventHandler(this.btnLogin_Click);
 
             // linkDaftar
-            this.linkDaftar.AutoSize = true;
-            this.linkDaftar.Location = new System.Drawing.Point(120, 180);
-            this.linkDaftar.Name = "linkDaftar";
-            this.linkDaftar.Size = new System.Drawing.Size(100, 13);
-            this.linkDaftar.TabIndex = 5;
-            this.linkDaftar.TabStop = true;
-            this.linkDaftar.Text = "Daftar akun baru";
-            this.linkDaftar.LinkColor = System.Drawing.Color.White;
-            this.linkDaftar.ActiveLinkColor = System.Drawing.Color.LightBlue;
-            this.linkDaftar.LinkClicked += new LinkLabelLinkClickedEventHandler(this.linkDaftar_LinkClicked);
+            linkDaftar.Text = "Belum punya akun? Daftar di sini";
+            linkDaftar.LinkColor = ColorTranslator.FromHtml("#5DADE2");
+            linkDaftar.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            linkDaftar.Location = new Point(140, 290);
+            linkDaftar.AutoSize = true;
+            linkDaftar.LinkClicked += new LinkLabelLinkClickedEventHandler(this.linkDaftar_LinkClicked);
 
-            // FormLogin
-            this.ClientSize = new System.Drawing.Size(500, 250);
-            this.Controls.Add(this.linkDaftar);
-            this.Controls.Add(this.btnLogin);
-            this.Controls.Add(this.txtPassword);
-            this.Controls.Add(this.txtUsername);
-            this.Controls.Add(this.lblPassword);
-            this.Controls.Add(this.lblUsername);
-            this.Name = "FormLogin";
-            this.Text = "Login";
+
+            // Tambah semua kontrol
+            this.Controls.Add(lblTitle);
+            this.Controls.Add(lblUsername);
+            this.Controls.Add(txtUsername);
+            this.Controls.Add(lblPassword);
+            this.Controls.Add(txtPassword);
+            this.Controls.Add(btnLogin);
+            this.Controls.Add(linkDaftar);
+
             this.ResumeLayout(false);
             this.PerformLayout();
         }

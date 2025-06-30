@@ -13,7 +13,17 @@ namespace MyFirstApp.projek.views
         private Button btnHapus, btnRefresh;
         private TableLayoutPanel layout;
         private Panel panelTombol;
+        private MainForm mainForm; // ✅ referensi ke MainForm
 
+        // ✅ Tambahan constructor dengan parameter MainForm
+        public DaftarTugasView(MainForm parent)
+        {
+            mainForm = parent;
+            InitializeComponent();
+            LoadDataFromDatabase();
+        }
+
+        // Constructor default jika dibutuhkan tanpa parameter
         public DaftarTugasView()
         {
             InitializeComponent();
@@ -25,7 +35,6 @@ namespace MyFirstApp.projek.views
             this.Dock = DockStyle.Fill;
             this.BackColor = Color.White;
 
-            // === LABEL ===
             lblTitle = new Label
             {
                 Text = "📋 Daftar Tugas",
@@ -35,7 +44,6 @@ namespace MyFirstApp.projek.views
                 Margin = new Padding(20)
             };
 
-            // === LIST VIEW ===
             lvDaftarTugas = new ListView
             {
                 Dock = DockStyle.Fill,
@@ -51,7 +59,6 @@ namespace MyFirstApp.projek.views
             lvDaftarTugas.Columns.Add("Deadline", 150);
             lvDaftarTugas.Columns.Add("Status", 200);
 
-            // === BUTTON HAPUS ===
             btnHapus = new Button
             {
                 Text = "🗑️ Hapus",
@@ -64,7 +71,6 @@ namespace MyFirstApp.projek.views
             btnHapus.FlatAppearance.BorderSize = 0;
             btnHapus.Click += BtnHapus_Click;
 
-            // === BUTTON REFRESH ===
             btnRefresh = new Button
             {
                 Text = "🔄 Refresh",
@@ -77,27 +83,21 @@ namespace MyFirstApp.projek.views
             btnRefresh.FlatAppearance.BorderSize = 0;
             btnRefresh.Click += BtnRefresh_Click;
 
-            // === PANEL TOMBOL ===
-            panelTombol = new Panel
-            {
-                Height = 60,
-                Dock = DockStyle.Fill
-            };
+            panelTombol = new Panel { Height = 60, Dock = DockStyle.Fill };
             btnHapus.Location = new Point(20, 10);
             btnRefresh.Location = new Point(140, 10);
             panelTombol.Controls.Add(btnHapus);
             panelTombol.Controls.Add(btnRefresh);
 
-            // === LAYOUT ===
             layout = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 RowCount = 3,
                 ColumnCount = 1
             };
-            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));       // Title
-            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F)); // List
-            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F)); // Button Panel
+            layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
 
             layout.Controls.Add(lblTitle, 0, 0);
             layout.Controls.Add(lvDaftarTugas, 0, 1);
@@ -115,36 +115,40 @@ namespace MyFirstApp.projek.views
                 using (MySqlConnection conn = DatabaseManager.GetConnection())
                 {
                     conn.Open();
-                    string query = "SELECT judul, deskripsi, tenggat_waktu, selesai FROM tugas ORDER BY tenggat_waktu ASC";
+                    string query = @"SELECT judul, deskripsi, tenggat_waktu, selesai 
+                                     FROM tugas 
+                                     WHERE user_id = @user_id 
+                                     ORDER BY tenggat_waktu ASC";
+
                     using (MySqlCommand cmd = new MySqlCommand(query, conn))
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
+                        cmd.Parameters.AddWithValue("@user_id", SessionManager.CurrentUserId);
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            string judul = reader.GetString("judul");
-                            string deskripsi = reader.GetString("deskripsi");
-                            DateTime deadline = reader.GetDateTime("tenggat_waktu");
-                            int statusValue = reader.GetInt32("selesai");
+                            while (reader.Read())
+                            {
+                                string judul = reader.GetString("judul");
+                                string deskripsi = reader.GetString("deskripsi");
+                                DateTime deadline = reader.GetDateTime("tenggat_waktu");
+                                int statusValue = reader.GetInt32("selesai");
 
-                            bool sudahLewat = deadline.Date < DateTime.Today && statusValue == 0;
-                            string statusStr = statusValue == 1
-                                ? "Selesai"
-                                : sudahLewat ? "Belum Selesai (❗Terlambat)" : "Belum Selesai";
+                                bool sudahLewat = deadline.Date < DateTime.Today && statusValue == 0;
+                                string statusStr = statusValue == 1
+                                    ? "Selesai"
+                                    : sudahLewat ? "Belum Selesai (❗Terlambat)" : "Belum Selesai";
 
-                            ListViewItem item = new ListViewItem(judul);
-                            item.SubItems.Add(deskripsi);
-                            item.SubItems.Add(deadline.ToString("dd MMM yyyy"));
-                            item.SubItems.Add(statusStr);
+                                ListViewItem item = new ListViewItem(judul);
+                                item.SubItems.Add(deskripsi);
+                                item.SubItems.Add(deadline.ToString("dd MMM yyyy"));
+                                item.SubItems.Add(statusStr);
 
-                            // Pewarnaan
-                            if (statusValue == 1)
-                                item.BackColor = Color.Honeydew;
-                            else if (sudahLewat)
-                                item.BackColor = Color.LightPink;
-                            else
-                                item.BackColor = Color.MistyRose;
+                                item.BackColor = statusValue == 1
+                                    ? Color.Honeydew
+                                    : sudahLewat ? Color.LightPink : Color.MistyRose;
 
-                            lvDaftarTugas.Items.Add(item);
+                                lvDaftarTugas.Items.Add(item);
+                            }
                         }
                     }
                 }
@@ -186,10 +190,11 @@ namespace MyFirstApp.projek.views
                     using (MySqlConnection conn = DatabaseManager.GetConnection())
                     {
                         conn.Open();
-                        string query = "DELETE FROM tugas WHERE judul = @judul LIMIT 1";
+                        string query = "DELETE FROM tugas WHERE judul = @judul AND user_id = @user_id LIMIT 1";
                         using (MySqlCommand cmd = new MySqlCommand(query, conn))
                         {
                             cmd.Parameters.AddWithValue("@judul", judul);
+                            cmd.Parameters.AddWithValue("@user_id", SessionManager.CurrentUserId);
                             int rows = cmd.ExecuteNonQuery();
 
                             if (rows > 0)
@@ -200,8 +205,8 @@ namespace MyFirstApp.projek.views
                             }
                             else
                             {
-                                MessageBox.Show("Tugas gagal dihapus.",
-                                    "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Tugas tidak ditemukan atau bukan milik Anda.",
+                                    "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             }
                         }
                     }

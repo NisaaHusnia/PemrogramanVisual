@@ -9,13 +9,23 @@ namespace MyFirstApp.projek.views
 {
     public partial class TambahTugasView : UserControl
     {
-        // UI Komponen
+        private MainForm mainForm;
+
         private TextBox txtJudul, txtDeskripsi;
         private DateTimePicker dtpDeadline;
         private ComboBox cmbStatus;
         private ListView lvTugas;
         private Button btnSimpan, btnEdit, btnHapus;
 
+        // ✅ Constructor yang menerima MainForm
+        public TambahTugasView(MainForm parent)
+        {
+            mainForm = parent;
+            InitializeComponent();
+            LoadTasks();
+        }
+
+        // (Optional) constructor default jika tetap ingin digunakan di luar navigasi
         public TambahTugasView()
         {
             InitializeComponent();
@@ -67,13 +77,13 @@ namespace MyFirstApp.projek.views
             });
 
             this.Dock = DockStyle.Fill;
-
         }
 
         private void btnSimpan_Click(object sender, EventArgs e)
         {
             var task = new TodoTask
             {
+                UserId = SessionManager.CurrentUserId,
                 Title = txtJudul.Text.Trim(),
                 Description = txtDeskripsi.Text.Trim(),
                 Deadline = dtpDeadline.Value,
@@ -96,6 +106,7 @@ namespace MyFirstApp.projek.views
 
             var updatedTask = new TodoTask
             {
+                UserId = SessionManager.CurrentUserId,
                 Title = txtJudul.Text.Trim(),
                 Description = txtDeskripsi.Text.Trim(),
                 Deadline = dtpDeadline.Value,
@@ -116,7 +127,7 @@ namespace MyFirstApp.projek.views
 
             string selectedTitle = lvTugas.SelectedItems[0].Text;
 
-            if (TaskModel.Delete(selectedTitle))
+            if (TaskModel.Delete(selectedTitle, SessionManager.CurrentUserId))
             {
                 LoadTasks();
                 ClearForm();
@@ -139,7 +150,7 @@ namespace MyFirstApp.projek.views
         private void LoadTasks()
         {
             lvTugas.Items.Clear();
-            var tasks = TaskModel.GetAll();
+            var tasks = TaskModel.GetAllByUser(SessionManager.CurrentUserId);
 
             foreach (var task in tasks)
             {
